@@ -1,36 +1,20 @@
 public class Manufacturer {
 
     private Shop shop;
-    final int CREATE = 3000;
-    final int TIME = 2500;
+    final private int CREATE_TIME = 3000;
 
     public Manufacturer(Shop shop) {
         this.shop = shop;
     }
 
-    public synchronized void createCar() {
+    public void createCar() {
         try {
-            Thread.sleep(CREATE);
+            Thread.sleep(CREATE_TIME);
             shop.getCars().add(new Car());
             System.out.println("Производитель Toyota выпустил 1 авто");
-            notify();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public synchronized Car buyCar() {
-        try {
-            System.out.println(Thread.currentThread().getName() + " зашел в автосалон");
-            while (shop.getCars().size() == 0) {
-                System.out.println("Машин нет");
-                wait();
-            }
-            Thread.sleep(TIME);
-            System.out.println(Thread.currentThread().getName() + " уехал на новеньком авто");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return shop.getCars().remove(0);
     }
 }
+
