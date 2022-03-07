@@ -9,26 +9,32 @@ public class Shop {
     Client client = new Client(this);
     List<Car> cars = new ArrayList<>();
 
-    public synchronized void sellCar () {
+    public void sellCar() {
         try {
             for (int i = 1; i <= AMOUNT; i++) {
                 System.out.println(Thread.currentThread().getName() + " зашел в автосалон");
-                while (client.getShop().getCars().isEmpty()) {
-                    System.out.println("Машин нет");
-                    wait();
+                synchronized (cars) {
+                    while (cars.isEmpty()) {
+                        System.out.println("Машин нет");
+                        cars.wait();
+                    }
+                    client.buyCar();
+                    Thread.sleep(BUY_TIME);
                 }
-                client.buyCar();
-                Thread.sleep(BUY_TIME);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized void acceptCar () {
-        while (getCars().size() < SHOP_LIMIT) {
-            manufacturer.createCar();
-            notifyAll();
+    public void acceptCar() {
+        for (int i = 0; i < SHOP_LIMIT; i++) {
+            synchronized (cars) {
+                manufacturer.createCar();
+                if (!getCars().isEmpty()) {
+                    cars.notifyAll();
+                }
+            }
         }
     }
 

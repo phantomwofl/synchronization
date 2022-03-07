@@ -3,7 +3,7 @@ public class Main {
 
         final Shop shop = new Shop();
 
-        new Thread(null, shop::acceptCar, "Продавец").start();
+
 
         ThreadGroup group = new ThreadGroup("group");
 
@@ -13,6 +13,8 @@ public class Main {
 
         new Thread(group, shop::sellCar, "Покупатель 3").start();
 
+
+        new Thread(null, shop::acceptCar, "Продавец").start();
 
     }
 }
